@@ -4,6 +4,13 @@
 // The secret key
 extern unsigned long int key;
 
+// read in the key from 'key.txt'
+void getkey(char* keyfile) {
+  FILE* file = fopen(keyfile, "r");
+  fscanf(file, "%lx", &key);
+  fclose(file);
+}
+
 unsigned char keyschedule(int x) {
   // rotate the key left 1-bit
   key = (key << 1) | (key >> 63);  

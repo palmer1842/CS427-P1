@@ -2,3 +2,5 @@ Makefile
 key.txt
 plaintext.txt
 cyphertext.txt
+*.o
+wsucrypt
