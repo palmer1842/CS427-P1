@@ -24,13 +24,15 @@ void getwords(int fd, unsigned short* word) {
 }
 
 int main(int argc, char** argv) {
+  unsigned short word[4];
+  unsigned short temp[4];
+
   // read in the key from 'key.txt'
   getkey("key.txt");
   if (DEBUG) printf("Key: %lx\n", key);
 
   // open plaintext file for reading
   int plainfd = open("plaintext.txt", O_RDONLY);
-  unsigned short word[4];
   getwords(plainfd, word);
   if (DEBUG) {
     for (int i = 0; i < 4; i++) {
@@ -55,12 +57,32 @@ int main(int argc, char** argv) {
   if (DEBUG) printf("\n");
 
   for (int round = 0; round < 16; round++) {
-   // round function stuff 
+    // F function
+    unsigned short f[2];
+    f_function(word[0], word[1], round, f);
+    
+    // get temp[0]
+    temp[0] = word[2] ^ f[0];
+    temp[0] = (temp[0] >> 1) | (temp[0] << 15);
+
+    // get temp[1]
+    temp[1] = (word[3] << 1) | (word[3] >> 15);
+    temp[1] = word[3] ^ f[1];
+
+    // get temp[2]
+    temp[2] = word[0];
+
+    // get temp[3]
+    temp[3] = word[1];
+
+    // assign temps as new words for next round
+    word[0] = temp[0];
+    word[1] = temp[1];
+    word[2] = temp[2];
+    word[3] = temp[3];
   }
 
   // output whitening
 
   close(plainfd);
-
-  return 0;
 }
