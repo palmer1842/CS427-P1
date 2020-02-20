@@ -15,12 +15,22 @@
 unsigned long int key;
 
 // Read in the plaintext
-void getwords(int fd, unsigned short* word) {
+void getblock(int fd, unsigned short* word) {
   for (int i = 0; i < 4; i++) {
     read(fd, &word[i], 2);
     // swap the bytes, since read places them in reverse order
     word[i] = (word[i] << 8) | (word[i] >> 8);
   }
+}
+
+// Whiten a block by XORing with the key
+void whiten(unsigned short* w) {
+  for (int i = 0; i < 4; i++) {
+    int j = 3 - i;
+    w[i] = w[i] ^ (key >> (16 * j));
+    if (DEBUG) printf("%x", w[i]); 
+  }
+  if (DEBUG) printf("\n");
 }
 
 int main(int argc, char** argv) {
@@ -33,7 +43,7 @@ int main(int argc, char** argv) {
 
   // open plaintext file for reading
   int plainfd = open("plaintext.txt", O_RDONLY);
-  getwords(plainfd, word);
+  getblock(plainfd, word);
   if (DEBUG) {
     for (int i = 0; i < 4; i++) {
       printf("word[%d]: %hu  ", i, word[i]);
@@ -49,12 +59,10 @@ int main(int argc, char** argv) {
 
   // input whitening
   if (DEBUG) printf("Input Whitening: ");
-  for (int i = 0; i < 4; i++) {
-    int j = 3 - i;
-    word[i] = word[i] ^ (key >> (16 * j));
-    if (DEBUG) printf("%x", word[i]); 
-  }
-  if (DEBUG) printf("\n");
+  whiten(word);
+
+  // TEST GPERM
+  gperm(word[0], 0);  
 
   for (int round = 0; round < 16; round++) {
     // F function
@@ -82,7 +90,17 @@ int main(int argc, char** argv) {
     word[3] = temp[3];
   }
 
+  // undo last swap
+  word[0] = temp[2];
+  word[1] = temp[3];
+  word[2] = temp[0];
+  word[3] = temp[1];
+
   // output whitening
+  if (DEBUG) printf("Output Whitening: ");
+  whiten(word);
+
+  //write cipher block to output file
 
   close(plainfd);
 }
