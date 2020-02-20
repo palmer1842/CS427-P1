@@ -70,14 +70,14 @@ int main(int argc, char** argv) {
     // F function
     unsigned short f[2];
     f_function(word[0], word[1], round, f);
-    
+
     // get temp[0]
     temp[0] = word[2] ^ f[0];
     temp[0] = (temp[0] >> 1) | (temp[0] << 15);
 
     // get temp[1]
     temp[1] = (word[3] << 1) | (word[3] >> 15);
-    temp[1] = temp[3] ^ f[1];
+    temp[1] = temp[1] ^ f[1];
 
     // get temp[2]
     temp[2] = word[0];
@@ -90,6 +90,14 @@ int main(int argc, char** argv) {
     word[1] = temp[1];
     word[2] = temp[2];
     word[3] = temp[3];
+
+    if (DEBUG) {
+      printf("Block: ");
+      for (int i = 0; i < 4; i++) {
+        printf("%x", word[i]);
+      }
+      printf("\n");
+    }
   }
 
   // undo last swap
