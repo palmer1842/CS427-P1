@@ -62,9 +62,11 @@ int main(int argc, char** argv) {
   whiten(word);
 
   // TEST GPERM
-  gperm(word[0], 0);  
+  // gperm(word[0], 0);  
 
   for (int round = 0; round < 16; round++) {
+    if (DEBUG) printf("ROUND %d\n", round);
+
     // F function
     unsigned short f[2];
     f_function(word[0], word[1], round, f);
@@ -75,7 +77,7 @@ int main(int argc, char** argv) {
 
     // get temp[1]
     temp[1] = (word[3] << 1) | (word[3] >> 15);
-    temp[1] = word[3] ^ f[1];
+    temp[1] = temp[3] ^ f[1];
 
     // get temp[2]
     temp[2] = word[0];

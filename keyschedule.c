@@ -17,7 +17,7 @@ unsigned char keyschedule(int x) {
  
   // return the byte at x mod 8 in the key
   unsigned char subkey = (key >> (8 * (x % 8))) & 0xff;
-  if (DEBUG) printf("Subkey: %x\n", subkey);
+  //if (DEBUG) printf("Subkey: %x\n", subkey);
 
   return subkey;
 }
