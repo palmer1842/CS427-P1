@@ -12,10 +12,10 @@ void getkey(char* keyfile);
 
 // The key scheduler. It will access the 64-bit key stored in 'key.txt' and
 // generate a subkey based on the input x.
-unsigned char keyschedule(int x);
+unsigned char keyschedule(int x, int encrypt);
 
 // The F function used in each round of the algorithm
-unsigned short* f_function(unsigned short w1, unsigned short w2, int round, unsigned short* f);
+unsigned short* f_function(unsigned short w1, unsigned short w2, int round, unsigned short* f, int encrypt);
 
 // The G-Permutation function used by the F function
-unsigned short gperm(unsigned short word, int round);
+unsigned short gperm(unsigned short word, int round, int encrypt);

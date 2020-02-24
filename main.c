@@ -36,6 +36,7 @@ void whiten(unsigned short* w) {
 int main(int argc, char** argv) {
   unsigned short word[4];
   unsigned short temp[4];
+  int encrypt = atoi(argv[1]);
 
   // read in the key from 'key.txt'
   getkey("key.txt");
@@ -52,32 +53,46 @@ int main(int argc, char** argv) {
   }
 
   // TEMPORARY WORDS FOR TESTING
-  word[0] = 0x0123;
-  word[1] = 0x4567;
-  word[2] = 0x89ab;
-  word[3] = 0xcdef;
+  if (encrypt) {
+    word[0] = 0x0123;
+    word[1] = 0x4567;
+    word[2] = 0x89ab;
+    word[3] = 0xcdef;
+  } else {
+    word[0] = 0x9a76;
+    word[1] = 0xd6d5;
+    word[2] = 0x78c4;
+    word[3] = 0x4766;
+  }
 
   // input whitening
   if (DEBUG) printf("Input Whitening: ");
   whiten(word);
-
-  // TEST GPERM
-  // gperm(word[0], 0);  
 
   for (int round = 0; round < 16; round++) {
     if (DEBUG) printf("ROUND %d\n", round);
 
     // F function
     unsigned short f[2];
-    f_function(word[0], word[1], round, f);
+    f_function(word[0], word[1], round, f, encrypt);
 
     // get temp[0]
-    temp[0] = word[2] ^ f[0];
-    temp[0] = (temp[0] >> 1) | (temp[0] << 15);
+    if (encrypt) {
+      temp[0] = word[2] ^ f[0];
+      temp[0] = (temp[0] >> 1) | (temp[0] << 15);
+    } else {
+      temp[0] = (temp[0] << 1) | (temp[0] >> 15);
+      temp[0] = temp[0] ^ f[0];
+    }
 
     // get temp[1]
-    temp[1] = (word[3] << 1) | (word[3] >> 15);
-    temp[1] = temp[1] ^ f[1];
+    if (encrypt) {
+      temp[1] = (word[3] << 1) | (word[3] >> 15);
+      temp[1] = temp[1] ^ f[1];
+    } else {
+      temp[1] = word[3] ^ f[1];
+      temp[1] = (temp[1] >> 1) | (temp[1] << 15);
+    }
 
     // get temp[2]
     temp[2] = word[0];

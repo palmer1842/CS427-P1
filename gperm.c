@@ -25,16 +25,16 @@ unsigned char ftable(unsigned char index) {
   return table[index >> 4][index & 0xf];
 }
 
-unsigned short gperm(unsigned short word, int round) {
+unsigned short gperm(unsigned short word, int round, int encrypt) {
   // initial g values come from the high and low bits of the word
   unsigned char g1 = word >> 8;
   unsigned char g2 = word & 0xff;
 
   // compute g3 - g6 using the ftable and given equations
-  unsigned char g3 = (ftable(g2 ^ keyschedule(4 * round)) ^ g1);
-  unsigned char g4 = (ftable(g3 ^ keyschedule(4 * round + 1)) ^ g2);
-  unsigned char g5 = (ftable(g4 ^ keyschedule(4 * round + 2)) ^ g3);
-  unsigned char g6 = (ftable(g5 ^ keyschedule(4 * round + 3)) ^ g4);
+  unsigned char g3 = (ftable(g2 ^ keyschedule(4 * round, encrypt)) ^ g1);
+  unsigned char g4 = (ftable(g3 ^ keyschedule(4 * round + 1, encrypt)) ^ g2);
+  unsigned char g5 = (ftable(g4 ^ keyschedule(4 * round + 2, encrypt)) ^ g3);
+  unsigned char g6 = (ftable(g5 ^ keyschedule(4 * round + 3, encrypt)) ^ g4);
 
   if (DEBUG) printf("g1: %x  g2: %x  g3: %x  g4: %x  g5: %x  g6: %x\n",
                      g1, g2, g3, g4, g5, g6);
