@@ -81,7 +81,7 @@ int main(int argc, char** argv) {
       temp[0] = word[2] ^ f[0];
       temp[0] = (temp[0] >> 1) | (temp[0] << 15);
     } else {
-      temp[0] = (temp[0] << 1) | (temp[0] >> 15);
+      temp[0] = (word[2] << 1) | (word[2] >> 15);
       temp[0] = temp[0] ^ f[0];
     }
 

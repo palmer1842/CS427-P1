@@ -2,7 +2,7 @@
 
 // GLOBAL
 // The secret key
-extern unsigned long int key;
+unsigned long int key;
 
 // read in the key from 'key.txt'
 void getkey(char* keyfile) {
@@ -23,7 +23,6 @@ unsigned char keyschedule(int x, int encrypt) {
     // rotate the key right one bit
     key = (key >> 1) | (key << 63);
   }
-  //if (DEBUG) printf("Subkey: %x\n", subkey);
 
   return subkey;
 }

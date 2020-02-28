@@ -18,4 +18,4 @@ unsigned char keyschedule(int x, int encrypt);
 unsigned short* f_function(unsigned short w1, unsigned short w2, int round, unsigned short* f, int encrypt);
 
 // The G-Permutation function used by the F function
-unsigned short gperm(unsigned short word, int round, int encrypt);
+unsigned short gperm(unsigned short word, int round, unsigned char sk0, unsigned char sk1, unsigned char sk2, unsigned char sk3);
