@@ -15,12 +15,18 @@
 unsigned long int key;
 
 // Read in the plaintext
-void getblock(int fd, unsigned short* word) {
+int getblock(int fd, unsigned short* word) {
+  int num;
   for (int i = 0; i < 4; i++) {
-    read(fd, &word[i], 2);
+    num = read(fd, &word[i], 2);
+    if (num == 0) {
+      if (DEBUG) printf("Words read: %d\n", i);
+      return i;
+    }
     // swap the bytes, since read places them in reverse order
     word[i] = (word[i] << 8) | (word[i] >> 8);
   }
+  return num;
 }
 
 // Whiten a block by XORing with the key
@@ -42,9 +48,22 @@ int main(int argc, char** argv) {
   getkey("key.txt");
   if (DEBUG) printf("Key: %lx\n", key);
 
-  // open plaintext file for reading
-  int plainfd = open("plaintext.txt", O_RDONLY);
-  getblock(plainfd, word);
+  // open plaintext and ciphertext for reading and writing
+  int readfd, writefd;
+  if (encrypt) {
+    readfd = open("plaintext.txt", O_RDONLY | O_CREAT,
+                                   S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+    writefd = open("cyphertext.txt", O_WRONLY | O_CREAT,
+                                   S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+  } else {
+    readfd = open("cyphertext.txt", O_RDONLY | O_CREAT,
+                                   S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+    writefd = open("plaintext.txt", O_WRONLY | O_CREAT,
+                                   S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+  }
+
+  // start encryption loop over blocks in the file
+  while (getblock(readfd, word)) {
   if (DEBUG) {
     for (int i = 0; i < 4; i++) {
       printf("word[%d]: %hu  ", i, word[i]);
@@ -127,5 +146,7 @@ int main(int argc, char** argv) {
 
   //write cipher block to output file
 
-  close(plainfd);
+  }
+  close(readfd);
+  close(writefd);
 }
