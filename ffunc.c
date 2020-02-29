@@ -1,6 +1,26 @@
+// Jake Palmer
+// 2/29/20
+// ffunc.c
+
+// This function is used in the round function of the encryption algorithm.
+// At the beginning of the function, the twelve subkeys needed are generated,
+// either for encryption or decryption. Then t0, t1, f0, and f1 are computed
+// according to the assignment specifications.
+
+// Parameters:
+// -- w1: the first word of the block
+// -- w2: the second word of the block
+// -- round: the current round number
+// -- f: an array used to store f0 and f1
+// -- encrypt: a flag indicating which mode the program is running in
+
+// Returns:
+// nothing
+
 #include "wsucrypt.h"
 
-unsigned short* f_function(unsigned short w1, unsigned short w2, int round, unsigned short* f, int encrypt) {
+void f_function(unsigned short w1, unsigned short w2, int round,
+                unsigned short* f, int encrypt) {
   // generate the 12 subkeys
   unsigned char sk[12];
   for (int i = 0; i < 12; i++) {
@@ -11,7 +31,7 @@ unsigned short* f_function(unsigned short w1, unsigned short w2, int round, unsi
     }
   }
 
-  // reverse the list if decrypting
+  // reverse the subkey list if decrypting
   if (!encrypt) {
     unsigned char temp;
     int j = 11;
@@ -44,5 +64,5 @@ unsigned short* f_function(unsigned short w1, unsigned short w2, int round, unsi
 
   if (DEBUG) printf("f0: %x  f1: %x\n", f[0], f[1]);
 
-  return f;
+  return;
 }
