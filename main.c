@@ -70,17 +70,16 @@ int main(int argc, char** argv) {
   if (DEBUG) printf("Key: %lx\n", key);
 
   // open input and output files for reading and writing
-  int readfd, writefd;
+  int readfd;
+  FILE* writefile;
   if (encrypt) {
     readfd = open(inputfile, O_RDONLY | O_CREAT,
                                    S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
-    writefd = open("ciphertext.txt", O_WRONLY | O_CREAT,
-                                   S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+    writefile = fopen("ciphertext.txt", "w");
   } else {
     readfd = open(inputfile, O_RDONLY | O_CREAT,
                                    S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
-    writefd = open("plaintext.txt", O_WRONLY | O_CREAT,
-                                   S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+    writefile = fopen("plaintext.txt", "w");
   }
 
   // start encryption loop over blocks in the file
@@ -167,9 +166,13 @@ int main(int argc, char** argv) {
     whiten(word);
 
     //write cipher block to output file
-
+    for (int i = 0; i < 4; i++) {
+      fprintf(writefile, "%x", word[i]);
     }
+  }
 
   close(readfd);
-  close(writefd);
+  fclose(writefile);
+
+  return 0;
 }
