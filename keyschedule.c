@@ -1,3 +1,16 @@
+// Jake Palmer
+// 2/29/20
+// keyschedule.c
+
+// This file contains two functions.
+// getkey() accepts a file name, which should contain a 64 bit hex key.
+// getsubkey() computes and returns a single byte subkey based on a given value
+// and the current mode.
+
+// Following the project specifications, the stored key will be modified in
+// the process of computing each subkey. To facilitate using this dynamic key,
+// it is stored in a program global variable.
+
 #include "wsucrypt.h"
 
 // GLOBAL
@@ -11,7 +24,8 @@ void getkey(char* keyfile) {
   fclose(file);
 }
 
-unsigned char keyschedule(int x, int encrypt) {
+// compute and return a subkey from parameters
+unsigned char getsubkey(int x, int encrypt) {
   unsigned char subkey;
   if (encrypt) {
     // rotate the key left 1-bit

@@ -25,9 +25,9 @@ void f_function(unsigned short w1, unsigned short w2, int round,
   unsigned char sk[12];
   for (int i = 0; i < 12; i++) {
     if (encrypt) {
-      sk[i] = keyschedule(4 * round + (i % 4), encrypt);
+      sk[i] = getsubkey(4 * round + (i % 4), encrypt);
     } else {
-      sk[i] = keyschedule(4 * (15 - round) + (3 - (i % 4)), encrypt);
+      sk[i] = getsubkey(4 * (15 - round) + (3 - (i % 4)), encrypt);
     }
   }
 
@@ -49,8 +49,8 @@ void f_function(unsigned short w1, unsigned short w2, int round,
     }
   }
 
-  unsigned short t0 = gperm(w1, round, sk[0], sk[1], sk[2], sk[3]);
-  unsigned short t1 = gperm(w2, round, sk[4], sk[5], sk[6], sk[7]);
+  unsigned short t0 = gperm(w1, sk[0], sk[1], sk[2], sk[3]);
+  unsigned short t1 = gperm(w2, sk[4], sk[5], sk[6], sk[7]);
 
   unsigned short concat = sk[8];
   concat = concat << 8 | sk[9];
