@@ -1,5 +1,5 @@
 // Jake Palmer
-// 2/22/20
+// 2/29/20
 // main.c
 
 // This program implements the WSU-CRYPT block-encryption algortihm outlined in
@@ -165,9 +165,19 @@ int main(int argc, char** argv) {
     if (DEBUG) printf("Output Whitening: ");
     whiten(word);
 
-    //write cipher block to output file
-    for (int i = 0; i < 4; i++) {
-      fprintf(writefile, "%x", word[i]);
+    // write block to output file
+    if (encrypt) {
+      // write as HEX
+      for (int i = 0; i < 4; i++) {
+        fprintf(writefile, "%x", word[i]);
+      }
+    } else {
+      // write as ASCII plaintext
+      for (int i = 0; i < 4; i++) {
+        char c1 = word[i] >> 8;
+        char c2 = word[i];
+        fprintf(writefile, "%c%c", c1, c2);
+      }
     }
   }
 
