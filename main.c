@@ -20,12 +20,16 @@ int getblock(int fd, unsigned short* word) {
   for (int i = 0; i < 4; i++) {
     num = read(fd, &word[i], 2);
     if (num == 0) {
-      if (DEBUG) printf("Words read: %d\n", i);
+      // pad the unused words with zero
+      for (int j = i; j < 4; j++) {
+        word[j] = 0;
+      }
       return i;
     }
     // swap the bytes, since read places them in reverse order
     word[i] = (word[i] << 8) | (word[i] >> 8);
   }
+
   return num;
 }
 
@@ -92,7 +96,7 @@ int main(int argc, char** argv) {
     }
 
     // TEMPORARY WORDS FOR TESTING
-    if (encrypt) {
+    /*if (encrypt) {
       word[0] = 0x0123;
       word[1] = 0x4567;
       word[2] = 0x89ab;
@@ -102,7 +106,7 @@ int main(int argc, char** argv) {
       word[1] = 0xd6d5;
       word[2] = 0x78c4;
       word[3] = 0x4766;
-    }
+    }*/
 
     // input whitening
     if (DEBUG) printf("Input Whitening: ");
