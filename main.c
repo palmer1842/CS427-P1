@@ -26,23 +26,34 @@ unsigned short chartohex(unsigned char c) {
 
 // Read in the input file
 // if encrypting, read as ASCII text file
+// partial blocks are padded with '0'
 // if decrypting, read as HEX text file
 int getblock(int fd, unsigned short* word, int encrypt) {
   int num;
-  if (encrypt) {
+  if (encrypt) {  // read as ASCII
     for (int i = 0; i < 4; i++) {
       num = read(fd, &word[i], 2);
-      if (num == 0) {
-        // pad the unused words with zero
-        for (int j = i; j < 4; j++) {
-          word[j] = '0';
-        }
-        return i;
+      if (DEBUG) printf("Bytes read from plaintext: %d\n", num);
+
+      // if first read returns zero, done reading
+      if (num == 0 && i == 0) return 0;
+
+      // pad half read word with a zero
+      if (num == 1) {
+        word[i] = (word[i] & 0x00ff) ^ 0x3000;
       }
+
+      // if read returns zero, pad remaining words with '0'
+      if (num == 0) {
+        for (int j = i; j < 4; j++) {
+          word[j] = 0x3030;
+        }
+      }
+
       // swap the bytes, since read places them in reverse order
       word[i] = (word[i] << 8) | (word[i] >> 8);
     }
-  } else {
+  } else {  // read as HEX
     unsigned char c;
     unsigned short temp;
     for (int i = 0; i < 4; i++) {
@@ -55,7 +66,7 @@ int getblock(int fd, unsigned short* word, int encrypt) {
     }
   }
 
-  return num;
+  return 1;
 }
 
 // Whiten a block by XORing with the key
