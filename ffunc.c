@@ -5,7 +5,7 @@
 // This function is used in the round function of the encryption algorithm.
 // At the beginning of the function, the twelve subkeys needed are generated,
 // either for encryption or decryption. Then t0, t1, f0, and f1 are computed
-// according to the assignment specifications.
+// according to the project specifications.
 
 // Parameters:
 // -- w1: the first word of the block

@@ -1,3 +1,22 @@
+// Jake Palmer
+// 2/29/20
+// gperm.c
+
+// The gperm function performs several manipulations on a given word. It is
+// manipulated with four subkeys and the use of the substitution table, as
+// outlined in the project specifications.
+// The associated ftable function simply maps values to their substitute in
+// the table.
+
+// Parameters:
+// -- word: the word being manipulated
+// -- sk0, sk1, sk2, sk4: the four subkeys used, which are passed in from the
+//    f function.
+
+// Returns:
+// -- output: a new "word", which is the result of the manipulations performed
+//    on the given word. This value is used as t0 and t1 in the f function. 
+
 #include "wsucrypt.h"
 
 unsigned char ftable(unsigned char index) {
@@ -25,7 +44,7 @@ unsigned char ftable(unsigned char index) {
   return table[index >> 4][index & 0xf];
 }
 
-unsigned short gperm(unsigned short word, int round, unsigned char sk0, unsigned char sk1, unsigned char sk2, unsigned char sk3) {
+unsigned short gperm(unsigned short word, unsigned char sk0, unsigned char sk1,                      unsigned char sk2, unsigned char sk3) {
   // initial g values come from the high and low bits of the word
   unsigned char g1 = word >> 8;
   unsigned char g2 = word & 0xff;
