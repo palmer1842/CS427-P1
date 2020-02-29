@@ -60,6 +60,7 @@ int getblock(int fd, unsigned short* word, int encrypt) {
       word[i] = 0;
       for (int j = 12; j >= 0; j -= 4) {
         num = read(fd, &c, 1);
+        if (num == 0) return 0;
         temp = chartohex(c);
         word[i] = word[i] ^ (temp << j);
       }
@@ -114,11 +115,11 @@ int main(int argc, char** argv) {
   FILE* writefile;
   if (encrypt) {
     readfd = open(inputfile, O_RDONLY | O_CREAT,
-                                   S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+                             S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
     writefile = fopen("ciphertext.txt", "w");
   } else {
     readfd = open(inputfile, O_RDONLY | O_CREAT,
-                                   S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+                             S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
     writefile = fopen("plaintext.txt", "w");
   }
 
@@ -216,7 +217,6 @@ int main(int argc, char** argv) {
       for (int i = 0; i < 4; i++) {
         char c1 = word[i] >> 8;
         char c2 = word[i];
-        printf("word[%d]: '%c' '%c'\n", i, c1, c2);
         fprintf(writefile, "%c%c", c1, c2);
       }
     }
