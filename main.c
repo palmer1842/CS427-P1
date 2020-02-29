@@ -40,23 +40,44 @@ void whiten(unsigned short* w) {
 }
 
 int main(int argc, char** argv) {
+  // check for proper number of arguments
+  if (argc != 4) {
+    printf("Usage: wsucrypt (-e | -d) inputfile.txt key.txt\n");
+    return 1;
+  }
+
+  // check flag for encrypt/decrypt
+  int encrypt;
+  if (!strcmp(argv[1], "-e")) {
+    encrypt = 1;
+  } else if (!strcmp(argv[1], "-d")) {
+    encrypt = 0;
+  } else {
+    printf("Usage: wsucrypt (-e | -d) inputfile.txt key.txt\n");
+    return 1;
+  }
+
+  // assign input files
+  char* inputfile = argv[2];
+  char* keyfile = argv[3];
+
+  // storage for each block as it is processed
   unsigned short word[4];
   unsigned short temp[4];
-  int encrypt = atoi(argv[1]);
 
-  // read in the key from 'key.txt'
-  getkey("key.txt");
+  // read in the key from the provided key file
+  getkey(keyfile);
   if (DEBUG) printf("Key: %lx\n", key);
 
-  // open plaintext and ciphertext for reading and writing
+  // open input and output files for reading and writing
   int readfd, writefd;
   if (encrypt) {
-    readfd = open("plaintext.txt", O_RDONLY | O_CREAT,
+    readfd = open(inputfile, O_RDONLY | O_CREAT,
                                    S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
-    writefd = open("cyphertext.txt", O_WRONLY | O_CREAT,
+    writefd = open("ciphertext.txt", O_WRONLY | O_CREAT,
                                    S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
   } else {
-    readfd = open("cyphertext.txt", O_RDONLY | O_CREAT,
+    readfd = open(inputfile, O_RDONLY | O_CREAT,
                                    S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
     writefd = open("plaintext.txt", O_WRONLY | O_CREAT,
                                    S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
@@ -88,6 +109,7 @@ int main(int argc, char** argv) {
     if (DEBUG) printf("Input Whitening: ");
     whiten(word);
 
+    // round function loop
     for (int round = 0; round < 16; round++) {
       if (DEBUG) printf("ROUND %d\n", round);
 
@@ -134,7 +156,7 @@ int main(int argc, char** argv) {
       }
     }
 
-    // undo last swap
+    // undo last swap from round function
     word[0] = temp[2];
     word[1] = temp[3];
     word[2] = temp[0];
@@ -147,6 +169,7 @@ int main(int argc, char** argv) {
     //write cipher block to output file
 
     }
+
   close(readfd);
   close(writefd);
 }

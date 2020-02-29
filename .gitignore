@@ -1,6 +1,6 @@
 Makefile
 key.txt
 plaintext.txt
-cyphertext.txt
+ciphertext.txt
 *.o
 wsucrypt
