@@ -44,9 +44,11 @@ void f_function(unsigned short w1, unsigned short w2, int round,
   }
 
   if (DEBUG) {
+    printf("keys: ");
     for (int i = 0; i < 12; i++) {
-      printf("key %d: %x\n", i, sk[i]);
+      printf("%x ", sk[i]);
     }
+    printf("\n");
   }
 
   unsigned short t0 = gperm(w1, sk[0], sk[1], sk[2], sk[3]);
