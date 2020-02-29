@@ -14,20 +14,45 @@
 // The secret key used in encryption and decryption
 unsigned long int key;
 
-// Read in the plaintext
-int getblock(int fd, unsigned short* word) {
+// Convert a char to its hex value
+unsigned short chartohex(unsigned char c) {
+  if (c >= '0' && c <= '9') {
+    c = c - '0';
+  } else {
+    c = c - 'a' + 10;
+  }
+  return c;
+}
+
+// Read in the input file
+// if encrypting, read as ASCII text file
+// if decrypting, read as HEX text file
+int getblock(int fd, unsigned short* word, int encrypt) {
   int num;
-  for (int i = 0; i < 4; i++) {
-    num = read(fd, &word[i], 2);
-    if (num == 0) {
-      // pad the unused words with zero
-      for (int j = i; j < 4; j++) {
-        word[j] = 0;
+  if (encrypt) {
+    for (int i = 0; i < 4; i++) {
+      num = read(fd, &word[i], 2);
+      if (num == 0) {
+        // pad the unused words with zero
+        for (int j = i; j < 4; j++) {
+          word[j] = '0';
+        }
+        return i;
       }
-      return i;
+      // swap the bytes, since read places them in reverse order
+      word[i] = (word[i] << 8) | (word[i] >> 8);
     }
-    // swap the bytes, since read places them in reverse order
-    word[i] = (word[i] << 8) | (word[i] >> 8);
+  } else {
+    unsigned char c;
+    unsigned short temp;
+    for (int i = 0; i < 4; i++) {
+      word[i] = 0;
+      for (int j = 12; j >= 0; j -= 4) {
+        num = read(fd, &c, 1);
+        temp = chartohex(c);
+        word[i] = word[i] ^ (temp << j);
+      }
+    }
   }
 
   return num;
@@ -87,10 +112,10 @@ int main(int argc, char** argv) {
   }
 
   // start encryption loop over blocks in the file
-  while (getblock(readfd, word)) {
+  while (getblock(readfd, word, encrypt)) {
     if (DEBUG) {
       for (int i = 0; i < 4; i++) {
-        printf("word[%d]: %hu  ", i, word[i]);
+        printf("word[%d]: %x  ", i, word[i]);
       }
       printf("\n");
     }
@@ -180,6 +205,7 @@ int main(int argc, char** argv) {
       for (int i = 0; i < 4; i++) {
         char c1 = word[i] >> 8;
         char c2 = word[i];
+        printf("word[%d]: '%c' '%c'\n", i, c1, c2);
         fprintf(writefile, "%c%c", c1, c2);
       }
     }
