@@ -17,6 +17,9 @@ Description:
   Input to the program is an ASCII text file for encryption, which is output as
   as HEX text file. I/O is reversed for decryption.
 
+  If the input file ends with a partial block, it will be padded with zeros,
+  i.e. '0'. Padding is not removed from the decrypted plaintext.
+
 Project Files:
   main.c -- Contains input processing and the main algorithm
   ffunc.c -- Contains the f function
