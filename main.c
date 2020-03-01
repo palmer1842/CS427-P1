@@ -8,6 +8,10 @@
 // - Round Function (16 Rounds)
 // - Output Whitening
 
+// The program has two modes of operation, encryption and decryption.
+
+// See README.txt for further documentation
+
 #include "wsucrypt.h"
 
 // GLOBAL
@@ -15,6 +19,7 @@
 unsigned long int key;
 
 // Convert a char to its hex value
+// From Stack Overflow. See References in README.
 unsigned short chartohex(unsigned char c) {
   if (c >= '0' && c <= '9') {
     c = c - '0';
@@ -24,10 +29,19 @@ unsigned short chartohex(unsigned char c) {
   return c;
 }
 
-// Read in the input file
-// if encrypting, read as ASCII text file
-// partial blocks are padded with '0'
-// if decrypting, read as HEX text file
+// Read in a block from the input file. If encrypting, read as an ASCII text
+// file. Partial blocks are padded with zeros. If decrypting, read as a HEX
+// text file.
+
+// Parameters:
+// -- fd: the file descriptor to read from
+// -- word: the array of four words to store the block in
+// -- encrypt: the current mode of the program
+
+// Returns:
+// -- 1: Success
+// -- 0: End Of File
+
 int getblock(int fd, unsigned short* word, int encrypt) {
   int num;
   if (encrypt) {  // read as ASCII
@@ -70,7 +84,15 @@ int getblock(int fd, unsigned short* word, int encrypt) {
   return 1;
 }
 
-// Whiten a block by XORing with the key
+// Whiten a block by XORing with the key.
+// The result is store directly in the block.
+
+// Parameters:
+// -- w: the array of words the block is stored in.
+
+// Returns:
+// nothing
+
 void whiten(unsigned short* w) {
   for (int i = 0; i < 4; i++) {
     int j = 3 - i;
@@ -79,6 +101,12 @@ void whiten(unsigned short* w) {
   }
   if (DEBUG) printf("\n");
 }
+
+// The main program, handling command line input, file processing, and the
+// main algorithm loop. It reads in from the input file one block at a time
+// and performs the encryption or decryption, depending on the given mode.
+// It writes each processed block to the output file before retrieving the
+// next one.
 
 int main(int argc, char** argv) {
   // check for proper number of arguments

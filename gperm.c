@@ -44,7 +44,8 @@ unsigned char ftable(unsigned char index) {
   return table[index >> 4][index & 0xf];
 }
 
-unsigned short gperm(unsigned short word, unsigned char sk0, unsigned char sk1,                      unsigned char sk2, unsigned char sk3) {
+unsigned short gperm(unsigned short word, unsigned char sk0, unsigned char sk1,
+                     unsigned char sk2, unsigned char sk3) {
   // initial g values come from the high and low bits of the word
   unsigned char g1 = word >> 8;
   unsigned char g2 = word & 0xff;
