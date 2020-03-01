@@ -20,6 +20,10 @@ unsigned long int key;
 // read in the key from 'key.txt'
 void getkey(char* keyfile) {
   FILE* file = fopen(keyfile, "r");
+  if (file == NULL) {
+    perror("Error opening keyfile");
+    exit(1);
+  }
   fscanf(file, "%lx", &key);
   fclose(file);
 }

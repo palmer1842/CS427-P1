@@ -47,6 +47,11 @@ int getblock(int fd, unsigned short* word, int encrypt) {
   if (encrypt) {  // read as ASCII
     for (int i = 0; i < 4; i++) {
       num = read(fd, &word[i], 2);
+      if (num == -1) {
+        perror("Error reading from input file");
+        close(fd);
+        exit(1);
+      }
       if (DEBUG) printf("Bytes read from plaintext: %d\n", num);
 
       // if first read returns zero, done reading
@@ -74,6 +79,11 @@ int getblock(int fd, unsigned short* word, int encrypt) {
       word[i] = 0;
       for (int j = 12; j >= 0; j -= 4) {
         num = read(fd, &c, 1);
+        if (num == -1) {
+          perror("Error reading from input file");
+          close(fd);
+          exit(1);
+        }
         if (num == 0) return 0;
         temp = chartohex(c);
         word[i] = word[i] ^ (temp << j);
@@ -142,13 +152,17 @@ int main(int argc, char** argv) {
   int readfd;
   FILE* writefile;
   if (encrypt) {
-    readfd = open(inputfile, O_RDONLY | O_CREAT,
-                             S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+    readfd = open(inputfile, O_RDONLY);
     writefile = fopen("ciphertext.txt", "w");
   } else {
-    readfd = open(inputfile, O_RDONLY | O_CREAT,
-                             S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+    readfd = open(inputfile, O_RDONLY);
     writefile = fopen("plaintext.txt", "w");
+  }
+
+  // error checking for input file
+  if (readfd == -1) {
+    perror("Error opening input file");
+    return 1;
   }
 
   // start encryption loop over blocks in the file
