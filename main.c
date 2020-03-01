@@ -75,7 +75,7 @@ void whiten(unsigned short* w) {
   for (int i = 0; i < 4; i++) {
     int j = 3 - i;
     w[i] = w[i] ^ (key >> (16 * j));
-    if (DEBUG) printf("%x", w[i]); 
+    if (DEBUG) printf("%04x", w[i]);
   }
   if (DEBUG) printf("\n");
 }
@@ -127,7 +127,7 @@ int main(int argc, char** argv) {
   while (getblock(readfd, word, encrypt)) {
     if (DEBUG) {
       for (int i = 0; i < 4; i++) {
-        printf("word[%d]: %x  ", i, word[i]);
+        printf("word[%d]: %04x  ", i, word[i]);
       }
       printf("\n");
     }
@@ -190,7 +190,7 @@ int main(int argc, char** argv) {
       if (DEBUG) {
         printf("Block: ");
         for (int i = 0; i < 4; i++) {
-          printf("%x", word[i]);
+          printf("%04x", word[i]);
         }
         printf("\n");
       }
@@ -210,7 +210,7 @@ int main(int argc, char** argv) {
     if (encrypt) {
       // write as HEX
       for (int i = 0; i < 4; i++) {
-        fprintf(writefile, "%x", word[i]);
+        fprintf(writefile, "%04x", word[i]);
       }
     } else {
       // write as ASCII plaintext
