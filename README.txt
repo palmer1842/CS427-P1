@@ -18,19 +18,20 @@ Description:
   as HEX text file. I/O is reversed for decryption.
 
 Project Files:
-  main.c -- Contains input processing and performs the encryption/decryption
+  main.c -- Contains input processing and the main algorithm
   ffunc.c -- Contains the f function
   gperm.c -- Contains the g permutation function with substitution table
   keyschedule.c -- Retrieves the key from keyfile and generates subkeys
+  wsucrypt.h --- Header file with function definitions and DEBUG options
   Makefile -- Compilation instructions for 'make'
   README.txt -- Documentation
 
 Compiling:
   A Makefile is included with the project files, so to build the program simply
-  run 'make'.
+  run 'make'. No special flags are used during the compilation.
 
 Usage and testing:
-  ./wsucrypt (-e | -d) inputfile.txt keyfile.txt
+  ./wsucrypt (-e | -d) inputfile keyfile
 
   When run in encryption mode, the contents of inputfile.txt will be read in
   as an ASCII text file, and keyfile.txt should contain a 64 bit HEX key. The
@@ -42,4 +43,5 @@ Usage and testing:
 
   If the output files do not exist, they will be created.
 
-Sample Execution:
+  Set DEBUG in wsucrypt.h to 1 and recompile for detailed output during the
+  programs execution.

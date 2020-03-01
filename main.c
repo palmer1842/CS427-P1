@@ -83,7 +83,7 @@ void whiten(unsigned short* w) {
 int main(int argc, char** argv) {
   // check for proper number of arguments
   if (argc != 4) {
-    printf("Usage: wsucrypt (-e | -d) inputfile.txt key.txt\n");
+    printf("Usage: wsucrypt (-e | -d) inputfile keyfile\n");
     return 1;
   }
 
@@ -94,7 +94,7 @@ int main(int argc, char** argv) {
   } else if (!strcmp(argv[1], "-d")) {
     encrypt = 0;
   } else {
-    printf("Usage: wsucrypt (-e | -d) inputfile.txt key.txt\n");
+    printf("Usage: wsucrypt (-e | -d) inputfile keyfile\n");
     return 1;
   }
 
