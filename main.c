@@ -132,19 +132,6 @@ int main(int argc, char** argv) {
       printf("\n");
     }
 
-    // TEMPORARY WORDS FOR TESTING
-    /*if (encrypt) {
-      word[0] = 0x0123;
-      word[1] = 0x4567;
-      word[2] = 0x89ab;
-      word[3] = 0xcdef;
-    } else {
-      word[0] = 0x9a76;
-      word[1] = 0xd6d5;
-      word[2] = 0x78c4;
-      word[3] = 0x4766;
-    }*/
-
     // input whitening
     if (DEBUG) printf("Input Whitening: ");
     whiten(word);
